@@ -1,0 +1,22 @@
+
+Summary
+This program will be used to keep track of daily thoughts, notes, and reminders that an user will input. Inspired by the
+need to look back in time to find pertinent information that may have been forgotten. Serves to give user an opportunity
+to record anything that they may find useful in the following weeks/months, but can't remember. This program will begin
+as a simple write and display program using texting files and current workspace paths. Later down the road, a GUI will
+be the forefront of the program allowing users to pull daily journal entries via a date specifier(calender). A database
+may be introduced to allow a more organized and quicker accessible information.
+
+
+Objectives
+1. Use Python libraries to write and save an entry to a specified file in a specified location.
+2. Give the user the ability to pull information from specified date.
+3. Display information in console(early dev) or in GUI(late dev).
+
+Requirements
+1. The editing window shall accept any ascii characters up to 300 characters
+2. The editing window shall display the date of entry
+3. The editing window shall contain a 'Save Entry' Button
+4. The editing window shall contain a 'Retrieve Entry' Button
+5. The editing window shall display a calender view
+6. The calender view shall be clickable allowing viewable on clicked date

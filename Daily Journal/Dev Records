@@ -1,0 +1,11 @@
+10/5/2023:  Wrote up basic summary, objectives, and requirements
+            Installed pycharm-community-2023.2.2
+            Installed Python3.9
+            Created Daily Journal Project
+            Added PyQt5 Libraries
+                * Fixed Issue with libraries: https://pythonpyqt.com/how-to-install-pyqt5-in-pycharm/
+            Programmed Basic GUI Window
+                * Tutorial: https://www.pythonguis.com/tutorials/creating-your-first-pyqt-window/
+                * Next Tutorial: https://www.pythonguis.com/tutorials/pyqt-signals-slots-events/
+            Turned main.py into executable using PyInstaller on PyCharm terminal
+                * https://pyinstaller.org/en/stable/usage.html
