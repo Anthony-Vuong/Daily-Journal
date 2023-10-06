@@ -8,8 +8,9 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Daily Journal")
         button = QPushButton("PRESS")
-        self.setFixedSize(QSize(400, 300))
+        self.setFixedSize(QSize(1250, 750))
         self.setCentralWidget(button)
+        "This is a commnet"
 
 
 app = QApplication([])
@@ -19,15 +20,6 @@ window = MainWindow()
 window.show()
 
 app.exec()
-
-
-
-
-
-
-
-
-
 
 
 
