@@ -1,20 +1,27 @@
+import sys
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget, QCalendarWidget, \
     QHBoxLayout, QLabel
 from PyQt5.QtCore import QSize, Qt, QDate
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery
 
 class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Daily Journal")
-        self.setFixedSize(QSize(1250, 750))
-
+        # Variable that contain selected date in day, month, and year
         self.year = 0
         self.day = 0
         self.month = 0
 
+        self.init_UI()
+
+    # Initializie the user interface
+    def init_UI(self):
+        self.setWindowTitle("Daily Journal")
+        self.setFixedSize(QSize(1250, 750))
         self.datebox = QLabel()
         self.datebox.setAlignment(QtCore.Qt.AlignCenter)
         date = self.get_Today_Date()
@@ -22,6 +29,7 @@ class MainWindow(QMainWindow):
 
         self.editWindow = QTextEdit()
         self.save_button = QPushButton("Save")
+        self.save_button.clicked.connect(self.save_edit)
         self.left_button = QPushButton("<")
         self.left_button.clicked.connect(self.last_day)
         self.right_button = QPushButton(">")
@@ -49,19 +57,62 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
 
+        # Databse prototyping
+        # CREATE TABLE new_employee ( id INTEGER PRIMARY KEY, name TEXT NOT NULL, photo BLOB NOT NULL, resume BLOB NOT NULL);
+        conn = QSqlDatabase.addDatabase("QSQLITE")
+        conn.setDatabaseName("entries.sqlite")
 
+        if not conn.open():
+            print("Database Error: %s" % conn.lastError().databaseText())
+            sys.exit(1)
+        else:
+            print("Database successfully connected.")
+
+        createTableQuery = QSqlQuery()
+        createTableQuery.exec(
+
+            """
+            CREATE TABLE journal_entries ( 
+                id INTEGER PRIMARY KEY, 
+                date TEXT NOT NULL, 
+                text_entry BLOB NOT NULL, 
+                files BLOB NOT NULL
+            )
+            """
+        )
+
+        print(conn.tables())
+
+    # Save button signal function
+    def save_edit(self):
+        t = self.editWindow.toPlainText()
+        print(t)
+
+    ################################################################################
+    #           Both last_day() and next_day() need logic for moving into next month
+    #           or previous month
+    ################################################################################
+
+    # Left button signal function
+    # Gets the previous date and displays in QLabel "datebox"
     def last_day(self):
         self.day = self.day - 1
         date = QDate(self.year, self.month, self.day)
         self.calendar.setSelectedDate(date)
         self.get_Date(date)
 
+    # Right button signal function
+    # Gets the next date and displays in QLabel "datebox"
     def next_day(self):
         self.day = self.day + 1
         date = QDate(self.year, self.month, self.day)
         self.calendar.setSelectedDate(date)
         self.get_Date(date)
 
+    ################################################################################
+    ################################################################################
+
+    # Initialize function for the current date
     def get_Today_Date(self):
         date = QDate.currentDate()
         self.day = int(date.toString(Qt.ISODate).split("-")[2])
@@ -71,7 +122,7 @@ class MainWindow(QMainWindow):
 
         return date.toString(Qt.DefaultLocaleLongDate)
 
-
+    # Function to display the date in a specific format - Weekday, Month Day, Year
     def get_Date(self, qDate):
         day_of_week_int = qDate.dayOfWeek()
         dayWeek = qDate.longDayName(day_of_week_int)
@@ -82,6 +133,7 @@ class MainWindow(QMainWindow):
 
 
 
+# Should throw this in main function
 app = QApplication([])
 
 window = MainWindow()

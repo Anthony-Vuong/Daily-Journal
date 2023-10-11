@@ -26,3 +26,10 @@
 10/10/2023: Adjusted layout to display date time format.
             Included right and left arrows to quickly move between days
                 * Need to account for end and beginning of months
+
+10/11/2023: Merged layout branch v1 to main
+            New branch for implementing saving edits to database
+                * https://realpython.com/python-pyqt-database/
+                * BLOB - https://pynative.com/python-sqlite-blob-insert-and-retrieve-digital-data/
+            DownloadED SQLITESTUDIO
+
