@@ -10,3 +10,19 @@
             Turned main.py into executable using PyInstaller on PyCharm terminal
                 * https://pyinstaller.org/en/stable/usage.html
             First Git Commit using GitHub Desktop
+
+10/6/2023: Researching on source control commands
+                * Git - branch, commit, add, checkout...
+                * Different than using GitHub Desktop
+                * https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners
+                * https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html
+                * https://docs.gitlab.com/ee/gitlab-basics/start-using-git.html
+           Added GitHub acct to PyCharm
+           Branched to LayoutDev branch
+           Adding layout to the GUI
+                * Layout for edit box, save button, and calendar
+                * https://www.pythonguis.com/tutorials/pyqt-layouts/
+
+10/10/2023: Adjusted layout to display date time format.
+            Included right and left arrows to quickly move between days
+                * Need to account for end and beginning of months
