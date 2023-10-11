@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.datebox.setText(date)
 
         self.editWindow = QTextEdit()
-        self.button = QPushButton("Save")
+        self.save_button = QPushButton("Save")
         self.left_button = QPushButton("<")
         self.left_button.clicked.connect(self.last_day)
         self.right_button = QPushButton(">")
@@ -30,7 +30,7 @@ class MainWindow(QMainWindow):
         self.calendar.clicked.connect(self.get_Date)
 
         hlayout_date_save = QHBoxLayout()
-        hlayout_date_save.addWidget(self.button)
+        hlayout_date_save.addWidget(self.save_button)
         hlayout_date_save.addWidget(self.left_button)
         hlayout_date_save.addWidget(self.datebox)
         hlayout_date_save.addWidget(self.right_button)
