@@ -11,12 +11,16 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.conn = None
+        self.selected_date = None
+
         # Variable that contain selected date in day, month, and year
         self.year = 0
         self.day = 0
         self.month = 0
 
         self.init_UI()
+        self.init_database()
 
     # Initializie the user interface
     def init_UI(self):
@@ -24,8 +28,8 @@ class MainWindow(QMainWindow):
         self.setFixedSize(QSize(1250, 750))
         self.datebox = QLabel()
         self.datebox.setAlignment(QtCore.Qt.AlignCenter)
-        date = self.get_Today_Date()
-        self.datebox.setText(date)
+        today_date = self.get_today_date()
+        self.datebox.setText(today_date)
 
         self.editWindow = QTextEdit()
         self.save_button = QPushButton("Save")
@@ -35,7 +39,7 @@ class MainWindow(QMainWindow):
         self.right_button = QPushButton(">")
         self.right_button.clicked.connect(self.next_day)
         self.calendar = QCalendarWidget()
-        self.calendar.clicked.connect(self.get_Date)
+        self.calendar.clicked.connect(self.get_selected_date)
 
         hlayout_date_save = QHBoxLayout()
         hlayout_date_save.addWidget(self.save_button)
@@ -57,16 +61,25 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
 
+    def init_database(self):
+        self.add_connect_database()
+
+        self.create_database_table()
+
+
+    def add_connect_database(self):
         # Databse prototyping
         # CREATE TABLE new_employee ( id INTEGER PRIMARY KEY, name TEXT NOT NULL, photo BLOB NOT NULL, resume BLOB NOT NULL);
-        conn = QSqlDatabase.addDatabase("QSQLITE")
-        conn.setDatabaseName("entries.sqlite")
+        self.conn = QSqlDatabase.addDatabase("QSQLITE")
+        self.conn.setDatabaseName("entry_records.sqlite")
 
-        if not conn.open():
-            print("Database Error: %s" % conn.lastError().databaseText())
+        if not self.conn.open():
+            print("Database Error: %s" % self.conn.lastError().databaseText())
             sys.exit(1)
         else:
             print("Database successfully connected.")
+
+    def create_database_table(self):
 
         createTableQuery = QSqlQuery()
         createTableQuery.exec(
@@ -75,18 +88,47 @@ class MainWindow(QMainWindow):
             CREATE TABLE journal_entries ( 
                 id INTEGER PRIMARY KEY, 
                 date TEXT NOT NULL, 
-                text_entry BLOB NOT NULL, 
+                text_entry TEXT NOT NULL, 
                 files BLOB NOT NULL
             )
             """
         )
 
-        print(conn.tables())
+        print(self.conn.tables())
+
+    def add_to_table(self, id, curr_date, t, file):
+
+        a=id
+        b=curr_date
+        c=t
+        d=file
+
+        query = QSqlQuery()
+        # ID cannot be 0
+        l = query.exec(
+            f"""INSERT INTO journal_entries (id, date, text_entry, files) 
+                    VALUES ('{a}', '{b}', '{c}', '{d}')"""
+        )
+
+        print(str(l))
 
     # Save button signal function
     def save_edit(self):
-        t = self.editWindow.toPlainText()
-        print(t)
+
+        # 1. Search for date
+        # 2. Compare text plain to database text
+        #       * if different, popup ask user if want to overwrite
+        #       * if same, do nothing
+        # 3.
+
+        t = str(self.editWindow.toPlainText())
+
+        d = self.get_selected_date
+
+
+        self.add_to_table(123, self.selected_date, t, None)
+
+
 
     ################################################################################
     #           Both last_day() and next_day() need logic for moving into next month
@@ -99,7 +141,7 @@ class MainWindow(QMainWindow):
         self.day = self.day - 1
         date = QDate(self.year, self.month, self.day)
         self.calendar.setSelectedDate(date)
-        self.get_Date(date)
+        self.get_selected_date(date)
 
     # Right button signal function
     # Gets the next date and displays in QLabel "datebox"
@@ -107,29 +149,37 @@ class MainWindow(QMainWindow):
         self.day = self.day + 1
         date = QDate(self.year, self.month, self.day)
         self.calendar.setSelectedDate(date)
-        self.get_Date(date)
+        self.get_selected_date(date)
 
     ################################################################################
     ################################################################################
 
     # Initialize function for the current date
-    def get_Today_Date(self):
+    def get_today_date(self):
         date = QDate.currentDate()
-        self.day = int(date.toString(Qt.ISODate).split("-")[2])
-        print(str(self.day))
-        self.month = int(date.toString(Qt.ISODate).split("-")[1])
-        self.year = int(date.toString(Qt.ISODate).split("-")[0])
-
+        self.update_selected_date(date)
         return date.toString(Qt.DefaultLocaleLongDate)
 
     # Function to display the date in a specific format - Weekday, Month Day, Year
-    def get_Date(self, qDate):
+    def get_selected_date(self, qDate):
         day_of_week_int = qDate.dayOfWeek()
         dayWeek = qDate.longDayName(day_of_week_int)
         month_of_year_int = qDate.month()
         monthYear = qDate.longMonthName(month_of_year_int)
-        date = ('{0}, {2} {3}, {1}'.format(dayWeek, qDate.year(), monthYear, qDate.day()))
-        self.datebox.setText(date)
+        self.selected_date = ('{0}, {2} {3}, {1}'.format(dayWeek, qDate.year(), monthYear, qDate.day()))
+        self.datebox.setText(self.selected_date)
+        self.update_selected_date(qDate)
+
+
+    #def set_selected_date(self):
+
+
+
+    def update_selected_date(self, selected_date):
+        self.day = int(selected_date.toString(Qt.ISODate).split("-")[2])
+        self.month = int(selected_date.toString(Qt.ISODate).split("-")[1])
+        self.year = int(selected_date.toString(Qt.ISODate).split("-")[0])
+
 
 
 
